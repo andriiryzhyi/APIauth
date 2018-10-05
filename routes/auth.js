@@ -1,9 +1,11 @@
 const express = require('express');
 const router = require('express-promise-router')();
+
+const {validateBody, schemas} = require('../helpers/routeHelpers')
 const AuthController = require('../controllers/auth')
 
 router.route('/sign-up')
-	.post(AuthController.signUp);
+	.post(validateBody(schemas.authSchema), AuthController.signUp);
 
 router.route('/sign-in')
 	.post(AuthController.signIn);

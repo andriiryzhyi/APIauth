@@ -1,6 +1,6 @@
 module.exports = {
 	signUp: async (req, res, next) => {
-		console.log('signUp');
+		console.log('signUp', req.value.body);
 	},
 
 	signIn: async (req, res, next) => {
