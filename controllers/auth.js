@@ -3,7 +3,6 @@ const JWT = require('jsonwebtoken');
 const {JWT_SECRET} = require('../config');
 
 signToken = user => {
-	console.log('DATE', new Date().setDate(new Date().getTime() + 1));
 	return JWT.sign({
 		iss: 'SomeString',
 		sub: user.id,
