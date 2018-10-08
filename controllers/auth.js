@@ -3,11 +3,12 @@ const JWT = require('jsonwebtoken');
 const {JWT_SECRET} = require('../config');
 
 signToken = user => {
+	console.log('DATE', new Date().setDate(new Date().getTime() + 1));
 	return JWT.sign({
 		iss: 'SomeString',
 		sub: user.id,
 		iat: new Date().getTime(), // current date
-		exp: new Date().setDate(new Date().getTime() + 1) // current date + 1 day
+		exp: new Date(new Date().getTime() + 24 *60 * 60 * 1000).getTime() // current date + 1 day
 	}, JWT_SECRET);
 }
 
@@ -38,5 +39,6 @@ module.exports = {
 
 	secret: async (req, res, next) => {
 		console.log('secret');
+		res.json({secret: 'resource'})
 	}
 }
