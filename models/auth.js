@@ -4,27 +4,49 @@ const Schema = mongoose.Schema;
 
 // Create a schema
 const userSchema = new Schema({
-	email: {
+	method: {
 		type: String,
-		required: true,
-		unique: true,
-		lovercase: true
-	},
-	password: {
-		type: String,
+		enum: ['local', 'google', 'facebook'],
 		required: true
+	},
+	local: {
+		email: {
+			type: String,
+			lovercase: true
+		},
+		password: {
+			type: String
+		}
+	},
+	google: {
+		id: {
+			type: String
+		},
+		email: {
+			type: String,
+			lovercase: true
+		}
+	},
+	facebook: {
+		id: {
+			type: String
+		},
+		email: {
+			type: String,
+			lovercase: true
+		}
 	}
 })
 
 userSchema.pre("save", async function(next) {
-	console.log('THIS', this);
 	try {
+		if (this.method !== 'local') {
+			next();
+		}
 		// Generate a salt
 		const salt = await bcrypt.genSalt(10);
-		const passwordHash = await bcrypt.hash(this.password, salt);
-		console.log('salt', salt);
-		console.log('password', this.password, 'password hash', passwordHash);
-		this.password = passwordHash;
+		const passwordHash = await bcrypt.hash(this.local.password, salt);
+		this.local.password = passwordHash;
 		next();
 	} catch (error) {
 		next(error);
@@ -33,7 +55,9 @@ userSchema.pre("save", async function(next) {
 
 userSchema.methods.isValidPassword = async function (newPassword) {
 	try {
-		return await bcrypt.compare(newPassword, this.password);
+		console.log('this.local.password', this.local.password);
+		console.log('new password', newPassword);
+		return await bcrypt.compare(newPassword, this.local.password);
 	} catch (error) {
 		throw new Error(error);
 	}

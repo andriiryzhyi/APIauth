@@ -7,12 +7,16 @@ const passportConfig = require('../passport.js');
 
 const passportSignIn = passport.authenticate('local', {session: false});
 const passportJWT = passport.authenticate('jwt', {session: false});
+const passportGoogle = passport.authenticate('googleToken', {session: false});
 
 router.route('/sign-up')
 	.post(validateBody(schemas.authSchema), AuthController.signUp);
 
 router.route('/sign-in')
 	.post(validateBody(schemas.authSchema), passportSignIn, AuthController.signIn);
+
+router.route('/oauth/google')
+	.post(passportGoogle, AuthController.googleOAuth);
 
 router.route('/secret')
 	.get(passportJWT, AuthController.secret);
